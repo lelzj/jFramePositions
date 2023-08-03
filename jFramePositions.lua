@@ -77,9 +77,9 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                         x = -600,
                         y = -212,
                     },
-                    width = 474,
-                    height = 350,
-                    hooks = {
+                    Width = 474,
+                    Height = 350,
+                    Hooks = {
                         'FCF_ResetAllWindows',
                         'FloatingChatFrame_Update',
                     },
@@ -100,14 +100,14 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         -- return void
         Addon.FRAMES.ApplySettings = function( self,Window )
             local s = Addon.FRAMES:GetSettings()[ Window:GetName() ];
-            if( s.width ~= nil ) then
-                Window:SetWidth( s.width )
+            if( s.Width ~= nil ) then
+                Window:SetWidth( s.Width )
             end
-            if( s.height ~= nil ) then
-                Window:SetHeight( s.height )
+            if( s.Height ~= nil ) then
+                Window:SetHeight( s.Height )
             end
-            if( s.scale ~= nil ) then
-                Window:SetScale( s.scale )
+            if( s.Scale ~= nil ) then
+                Window:SetScale( s.Scale )
             end
             if( s.Alpha ~= nil ) then
                 Window:SetAlpha( s.Alpha )
@@ -119,7 +119,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 return;
             end
 
-            local _ap, _, _relp, _x = Window:GetPoint()
+            local _ap, _, _relp, _x = Window:GetPoint();
             if( _ap ~= s.Moving.AnchorPoint or _relp ~= s.Moving.RelativePoint or Round( tonumber( _x ) ) ~= s.Moving.x ) then
                 Window:ClearAllPoints();
                 Window:SetMovable( true );
@@ -140,8 +140,8 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                     end );
                 end
             end
-            if( s.hooks ) then
-                for i,Hook in ipairs( s.hooks ) do
+            if( s.Hooks ) then
+                for i,Hook in ipairs( s.Hooks ) do
                     if( not Addon.FRAMES.Hooked[ Hook ] ) then
                         hooksecurefunc( Hook, function()
                             Addon.FRAMES:ApplySettings( _G[Window:GetName()] );
@@ -207,9 +207,6 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 Addon.FRAMES.Events:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
                 Addon.FRAMES.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
-            Addon.FRAMES.Events:SetScript( 'OnEvent', function( self,Event )
-                Addon.FRAMES:Refresh();
-            end );
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
         end
 
