@@ -5,7 +5,7 @@ Addon.FRAMES:RegisterEvent( 'ADDON_LOADED' );
 Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
     if( AddonName == 'jFramePositions' ) then
 
-        Addon.FRAMES.Hooked = {};
+        self.Hooked = {};
 
         --
         --  Get module defaults
@@ -17,14 +17,14 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         end
 
         Addon.FRAMES.SetValue = function( self,Index,Value )
-            if( Addon.FRAMES.persistence[ Index ] ~= nil ) then
-                Addon.FRAMES.persistence[ Index ] = Value;
+            if( self.persistence[ Index ] ~= nil ) then
+                self.persistence[ Index ] = Value;
             end
         end
 
         Addon.FRAMES.GetValue = function( self,Index )
-            if( Addon.FRAMES.persistence[ Index ] ~= nil ) then
-                return Addon.FRAMES.persistence[ Index ];
+            if( self.persistence[ Index ] ~= nil ) then
+                return self.persistence[ Index ];
             end
         end
 
@@ -70,7 +70,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 ChatFrame1 = {
                     Alpha = 1,
                     Moving = {
-                        Movable = false,
+                        Movable = true,
                         RelativeFrame = UIParent,
                         AnchorPoint = 'right',
                         RelativePoint = 'center',
@@ -99,7 +99,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         -- @param   string  Window
         -- return void
         Addon.FRAMES.ApplySettings = function( self,Window )
-            local s = Addon.FRAMES:GetSettings()[ Window:GetName() ];
+            local s = self:GetSettings()[ Window:GetName() ];
             if( s.Width ~= nil ) then
                 Window:SetWidth( s.Width )
             end
@@ -142,11 +142,11 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             end
             if( s.Hooks ) then
                 for i,Hook in ipairs( s.Hooks ) do
-                    if( not Addon.FRAMES.Hooked[ Hook ] ) then
+                    if( not self.Hooked[ Hook ] ) then
                         hooksecurefunc( Hook, function()
-                            Addon.FRAMES:ApplySettings( _G[Window:GetName()] );
+                            self:ApplySettings( _G[Window:GetName()] );
                         end );
-                        Addon.FRAMES.Hooked[ Hook ] = true;
+                        self.Hooked[ Hook ] = true;
                     end
                 end
             end
@@ -157,14 +157,14 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         --
         --  @return void
         Addon.FRAMES.Refresh = function( self )
-            if( not Addon.FRAMES.persistence ) then
+            if( not self.persistence ) then
                 return;
             end
             C_Timer.After( 1, function()
-                for Window,i in pairs( Addon.FRAMES:GetSettings() ) do
+                for Window,i in pairs( self:GetSettings() ) do
                     Window = _G[ Window ] or false;
                     if( Window ) then
-                        Addon.FRAMES:ApplySettings( Window );
+                        self:ApplySettings( Window );
                     end
                 end
             end );
@@ -176,12 +176,12 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         --  @return void
         Addon.FRAMES.Init = function( self )
             -- Database
-            Addon.FRAMES.db = LibStub( 'AceDB-3.0' ):New( AddonName,{ char = Addon.FRAMES:GetDefaults() },true );
-            if( not Addon.FRAMES.db ) then
+            self.db = LibStub( 'AceDB-3.0' ):New( AddonName,{ char = self:GetDefaults() },true );
+            if( not self.db ) then
                 return;
             end
-            Addon.FRAMES.persistence = Addon.FRAMES.db.char;
-            if( not Addon.FRAMES.persistence ) then
+            self.persistence = self.db.char;
+            if( not self.persistence ) then
                 return;
             end
         end
@@ -192,27 +192,27 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         --  @return void
         Addon.FRAMES.Run = function( self )
             -- Events frame
-            Addon.FRAMES.Events = CreateFrame( 'Frame' );
+            self.Events = CreateFrame( 'Frame' );
             -- Reset edits
             if( EditModeManagerFrame ) then
                 EventRegistry:RegisterCallback( 'EditMode.Enter', function()
                 end );
                 EventRegistry:RegisterCallback( 'EditMode.Exit', function()
-                    Addon.FRAMES:Refresh();
+                    self:Refresh();
                 end );
             end
             -- Reset events
             if( not Addon:IsClassic() ) then
-                Addon.FRAMES.Events:RegisterEvent( 'CINEMATIC_STOP' );
-                Addon.FRAMES.Events:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
-                Addon.FRAMES.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
+                self.Events:RegisterEvent( 'CINEMATIC_STOP' );
+                self.Events:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
+                self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
         end
 
-        Addon.FRAMES:Init();
-        Addon.FRAMES:Refresh();
-        Addon.FRAMES:Run();
-        Addon.FRAMES:UnregisterEvent( 'ADDON_LOADED' );
+        self:Init();
+        self:Refresh();
+        self:Run();
+        self:UnregisterEvent( 'ADDON_LOADED' );
     end
 end );
