@@ -87,13 +87,6 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             };
         end
 
-        --
-        --  Create module config frames
-        --
-        --  @return void
-        Addon.FRAMES.CreateFrames = function( self )
-        end
-
         -- Update Window
         --
         -- @param   string  Window
@@ -208,6 +201,9 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
+            self.Events:SetScript( 'OnEvent',function( self,Event )
+                Addon.FRAMES:Refresh();
+            end );
         end
 
         self:Init();
