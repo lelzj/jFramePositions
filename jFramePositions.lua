@@ -202,7 +202,13 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
             self.Events:SetScript( 'OnEvent',function( self,Event )
-                Addon.FRAMES:Refresh();
+                if( Event == 'PLAYER_LEVEL_UP' ) then
+                    C_Timer.After( 2, function()
+                        Addon.FRAMES:Refresh();
+                    end );
+                else
+                    Addon.FRAMES:Refresh();
+                end
             end );
         end
 
