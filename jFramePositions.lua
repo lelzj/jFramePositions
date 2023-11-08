@@ -91,7 +91,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         --
         -- @param   string  Window
         -- return void
-        Addon.FRAMES.ApplySettings = function( self,Window )
+        Addon.FRAMES.ApplyClassicSettings = function( self,Window )
             local s = self:GetSettings()[ Window:GetName() ];
             if( s.Width ~= nil ) then
                 Window:SetWidth( s.Width )
@@ -137,11 +137,25 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 for i,Hook in ipairs( s.Hooks ) do
                     if( not self.Hooked[ Hook ] ) then
                         hooksecurefunc( Hook, function()
-                            self:ApplySettings( _G[Window:GetName()] );
+                            self:ApplyClassicSettings( _G[Window:GetName()] );
                         end );
                         self.Hooked[ Hook ] = true;
                     end
                 end
+            end
+        end
+
+        Addon.FRAMES.ApplyRetailSettings = function( self,Window )
+            if( EditModeManagerFrame ) then
+                Enum.EditModeSystem.ChatFrame = {
+                    anchorInfo = {
+                        point = self:GetSettings().ChatFrame1.Moving.AnchorPoint,
+                        relativeTo = self:GetSettings().ChatFrame1.Moving.RelativeFrame,
+                        relativePoint = self:GetSettings().ChatFrame1.Moving.RelativePoint,
+                        offsetX = self:GetSettings().ChatFrame1.Moving.x,
+                        offsetY = self:GetSettings().ChatFrame1.Moving.y,
+                    },
+                };
             end
         end
 
@@ -157,7 +171,12 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 for Window,i in pairs( self:GetSettings() ) do
                     Window = _G[ Window ] or false;
                     if( Window ) then
-                        self:ApplySettings( Window );
+                        if( Addon:IsClassic() ) then
+                            self:ApplyClassicSettings( Window );
+                        else
+                            self:ApplyClassicSettings( Window );
+                            --self:ApplyRetailSettings();
+                        end
                     end
                 end
             end );
@@ -201,6 +220,10 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
+            if( EditModeManagerFrame ) then
+                print( 'jFramePositions printing useCompactPartyFrames value' );
+                print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
+            end
             self.Events:SetScript( 'OnEvent',function( self,Event )
                 if( Event == 'PLAYER_LEVEL_UP' ) then
                     C_Timer.After( 2, function()
