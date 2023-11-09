@@ -220,10 +220,10 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
-            if( EditModeManagerFrame ) then
+            --[[if( EditModeManagerFrame ) then
                 print( 'jFramePositions printing useCompactPartyFrames value' );
                 print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
-            end
+            end]]
             self.Events:SetScript( 'OnEvent',function( self,Event )
                 if( Event == 'PLAYER_LEVEL_UP' ) then
                     C_Timer.After( 2, function()
