@@ -52,7 +52,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                         RelativeFrame = UIParent,
                         AnchorPoint = 'right',
                         RelativePoint = 'center',
-                        x = 340,
+                        x = 365,
                         y = -150,
                     },
                 },
