@@ -147,6 +147,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
 
         Addon.FRAMES.ApplyRetailSettings = function( self,Window )
             if( EditModeManagerFrame ) then
+                Addon:Dump( EDIT_MODE_MODERN_SYSTEM_MAP ) -- < what is here? anything? what about EDIT_MODE_MODERN_SYSTEM_MAP.Enum if yes?
                 Enum.EditModeSystem.ChatFrame = {
                     anchorInfo = {
                         point = self:GetSettings().ChatFrame1.Moving.AnchorPoint,
@@ -220,6 +221,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
+            -- https://wowpedia.fandom.com/wiki/Category:API_namespaces/C_EditMode
             --[[if( EditModeManagerFrame ) then
                 print( 'jFramePositions printing useCompactPartyFrames value' );
                 print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
