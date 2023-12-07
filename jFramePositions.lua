@@ -199,7 +199,6 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             if( not self.persistence ) then
                 return;
             end
-            GossipFrame:SetFrameStrata( 'DIALOG' );
         end
 
         --
