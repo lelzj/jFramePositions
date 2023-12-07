@@ -63,7 +63,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                         RelativeFrame = UIParent,
                         AnchorPoint = 'right',
                         RelativePoint = 'center',
-                        x = 370,
+                        x = 600,
                         y = -50,
                     },
                 },
@@ -148,6 +148,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
         Addon.FRAMES.ApplyRetailSettings = function( self,Window )
             if( EditModeManagerFrame ) then
                 Addon:Dump( EDIT_MODE_MODERN_SYSTEM_MAP ) -- < what is here? anything? what about EDIT_MODE_MODERN_SYSTEM_MAP.Enum if yes?
+                print( AddonName..' just dumped data' );
                 Enum.EditModeSystem.ChatFrame = {
                     anchorInfo = {
                         point = self:GetSettings().ChatFrame1.Moving.AnchorPoint,
@@ -172,8 +173,9 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 for Window,i in pairs( self:GetSettings() ) do
                     Window = _G[ Window ] or false;
                     if( Window ) then
-                        if( Addon:IsClassic() ) then
+                        if( Addon:IsClassic() or Addon:IsWrath() ) then
                             self:ApplyClassicSettings( Window );
+                            --self:ApplyRetailSettings();
                         else
                             self:ApplyClassicSettings( Window );
                             --self:ApplyRetailSettings();
@@ -197,6 +199,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             if( not self.persistence ) then
                 return;
             end
+            GossipFrame:SetFrameStrata( 'DIALOG' );
         end
 
         --
