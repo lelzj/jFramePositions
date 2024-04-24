@@ -228,7 +228,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 print( 'jFramePositions printing useCompactPartyFrames value' );
                 print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
             end]]
-            self.Events:SetScript( 'OnEvent',function( self,Event )
+            self.Events:SetScript( 'OnEvent',function( self,Event,... )
                 if( Event == 'PLAYER_LEVEL_UP' ) then
                     C_Timer.After( 2, function()
                         Addon.FRAMES:Refresh();
