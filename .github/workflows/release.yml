@@ -1,0 +1,6 @@
+name: Package and release
+
+on:
+  push:
+    tags:
+      - '**'
