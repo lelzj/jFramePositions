@@ -221,6 +221,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 self.Events:RegisterEvent( 'CINEMATIC_STOP' );
                 self.Events:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
                 self.Events:RegisterEvent( 'PLAYER_LEVEL_UP' );
+                self.Events:RegisterEvent( 'SPELLS_CHANGED' );
             end
             -- /wow-retail-source/Interface/FrameXML/EditModePresetLayouts.lua
             -- https://wowpedia.fandom.com/wiki/Category:API_namespaces/C_EditMode
