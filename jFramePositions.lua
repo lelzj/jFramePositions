@@ -106,7 +106,11 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 Window:SetScale( s.Scale )
             end
             if( s.Alpha ~= nil ) then
-                Window:SetAlpha( s.Alpha )
+                if( s.FadeAble ) then
+                    Window:SetAlpha( 0 );
+                else
+                    Window:SetAlpha( s.Alpha );
+                end
             end
             if( not s.Moving ) then
                 return;
@@ -234,15 +238,11 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             end]]
 
             local FaderFrame = CreateFrame( 'Frame' );
-            FaderFrame:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
             FaderFrame:RegisterEvent( 'PLAYER_TARGET_CHANGED' );
             FaderFrame:RegisterEvent( 'PLAYER_REGEN_DISABLED' );
             FaderFrame:RegisterEvent( 'PLAYER_REGEN_ENABLED' );
+            FaderFrame:RegisterEvent( 'UNIT_HEALTH' );
             FaderFrame:RegisterEvent( 'UNIT_AURA' );
-            --  @todo
-            --  find out if we there are events for
-            --  player healing self
-            --  if so, show all frames during this time
             FaderFrame:SetScript( 'OnEvent',function( self,Event,... )
                 if( InCombatLockdown() ) then
                     return;
@@ -251,9 +251,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 for Window,WindowData in pairs( Addon.FRAMES:GetSettings() ) do
                     Window = _G[ Window ] or false;
                     if( Window and WindowData.FadeAble ) then
-                        if( Event == 'PLAYER_ENTERING_WORLD' ) then
-                            a = WindowData.Alpha;
-                        elseif( Event == 'PLAYER_TARGET_CHANGED' ) then
+                        if( Event == 'PLAYER_TARGET_CHANGED' ) then
                             if( UnitExists( 'target' ) ) then
                                 a = WindowData.Alpha;
                             end
@@ -269,6 +267,15 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                                             a = WindowData.Alpha;
                                         end
                                     end
+                                end
+                            end
+                        elseif( Event == 'UNIT_HEALTH' ) then
+                            local Unit = select( 1,... );
+                            if( Addon:Minify( Unit ):find( 'player' ) ) then
+                                if( UnitHealth( 'player' ) >= UnitHealthMax( 'player' ) ) then
+                                    a = 0;
+                                else
+                                    a = WindowData.Alpha;
                                 end
                             end
                         else
