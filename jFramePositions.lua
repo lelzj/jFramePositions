@@ -36,6 +36,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             return {
                 PlayerFrame = {
                     Alpha = 0.9,
+                    FadeAble = true,
                     Moving = {
                         Movable = false,
                         RelativeFrame = UIParent,
@@ -47,6 +48,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 },
                 TargetFrame = {
                     Alpha = 0.9,
+                    FadeAble = true,
                     Moving = {
                         Movable = false,
                         RelativeFrame = UIParent,
@@ -58,6 +60,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 },
                 FocusFrame = {
                     Alpha = 0.9,
+                    FadeAble = true,
                     Moving = {
                         Movable = false,
                         RelativeFrame = UIParent,
@@ -229,6 +232,33 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 print( 'jFramePositions printing useCompactPartyFrames value' );
                 print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
             end]]
+
+            local FaderFrame = CreateFrame( 'Frame' );
+            FaderFrame:RegisterEvent( 'PLAYER_ENTERING_WORLD' );
+            FaderFrame:RegisterEvent( 'PLAYER_TARGET_CHANGED' );
+            FaderFrame:RegisterEvent( 'PLAYER_REGEN_DISABLED' );
+            FaderFrame:RegisterEvent( 'PLAYER_REGEN_ENABLED' );
+            FaderFrame:SetScript( 'OnEvent',function( self,Event )
+                local a = UnitAffectingCombat( 'player' ) and 1 or 0;
+                for Window,i in pairs( Addon.FRAMES:GetSettings() ) do
+                    Window = _G[ Window ] or false;
+                    if( Window and i.FadeAble ) then
+                        if( Event == 'PLAYER_ENTERING_WORLD' ) then
+                            a = i.Alpha;
+                        elseif( Event == 'PLAYER_TARGET_CHANGED' ) then
+                            if( UnitExists( 'target' ) ) then
+                                a = i.Alpha;
+                            end
+                        else
+                            if( a > 0 ) then
+                                a = i.Alpha;
+                            end
+                        end
+                        Window:SetAlpha( a );
+                    end
+                end
+            end );
+
             self.Events:SetScript( 'OnEvent',function( self,Event,... )
                 if( Event == 'PLAYER_LEVEL_UP' ) then
                     C_Timer.After( 2, function()
@@ -240,9 +270,15 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             end );
         end
 
-        self:Init();
-        self:Refresh();
-        self:Run();
+        local EventFrame = CreateFrame( 'Frame' );
+        EventFrame:RegisterEvent( 'COMPACT_UNIT_FRAME_PROFILES_LOADED' );
+        EventFrame:SetScript( 'OnEvent',function()
+            self:Init();
+            self:Refresh();
+            C_Timer.After( 2,function()
+                self:Run();
+            end );
+        end );
         self:UnregisterEvent( 'ADDON_LOADED' );
     end
 end );
