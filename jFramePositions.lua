@@ -238,20 +238,42 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             FaderFrame:RegisterEvent( 'PLAYER_TARGET_CHANGED' );
             FaderFrame:RegisterEvent( 'PLAYER_REGEN_DISABLED' );
             FaderFrame:RegisterEvent( 'PLAYER_REGEN_ENABLED' );
-            FaderFrame:SetScript( 'OnEvent',function( self,Event )
+            FaderFrame:RegisterEvent( 'UNIT_AURA' );
+            --  @todo
+            --  find out if we there are events for
+            --  player healing self
+            --  if so, show all frames during this time
+            FaderFrame:SetScript( 'OnEvent',function( self,Event,... )
+                if( InCombatLockdown() ) then
+                    return;
+                end
                 local a = UnitAffectingCombat( 'player' ) and 1 or 0;
-                for Window,i in pairs( Addon.FRAMES:GetSettings() ) do
+                for Window,WindowData in pairs( Addon.FRAMES:GetSettings() ) do
                     Window = _G[ Window ] or false;
-                    if( Window and i.FadeAble ) then
+                    if( Window and WindowData.FadeAble ) then
                         if( Event == 'PLAYER_ENTERING_WORLD' ) then
-                            a = i.Alpha;
+                            a = WindowData.Alpha;
                         elseif( Event == 'PLAYER_TARGET_CHANGED' ) then
                             if( UnitExists( 'target' ) ) then
-                                a = i.Alpha;
+                                a = WindowData.Alpha;
+                            end
+                        elseif( Event == 'UNIT_AURA' ) then
+                            local AuraData = select( 2,... );
+                            if( AuraData.addedAuras ) then
+                                for i,Aura in pairs( AuraData.addedAuras ) do
+                                    if( Aura.sourceUnit and Addon:Minify( Aura.sourceUnit ):find( 'player' ) ) then
+                                        if( Aura.name and Addon:Minify( Aura.name ):find( 'food' ) ) then
+                                            a = WindowData.Alpha;
+                                        end
+                                        if( Aura.name and Addon:Minify( Aura.name ):find( 'drink' ) ) then
+                                            a = WindowData.Alpha;
+                                        end
+                                    end
+                                end
                             end
                         else
                             if( a > 0 ) then
-                                a = i.Alpha;
+                                a = WindowData.Alpha;
                             end
                         end
                         Window:SetAlpha( a );
