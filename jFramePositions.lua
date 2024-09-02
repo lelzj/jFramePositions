@@ -107,7 +107,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
             end
             if( s.Alpha ~= nil ) then
                 if( s.FadeAble ) then
-                    Window:SetAlpha( 0 );
+                    --Window:SetAlpha( 0 );
                 else
                     Window:SetAlpha( s.Alpha );
                 end
@@ -237,10 +237,10 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 print( Enum.EditModeUnitFrameSetting.UseRaidStylePartyFrames );
             end]]
 
+            --[[
             local FaderFrame = CreateFrame( 'Frame' );
             FaderFrame:RegisterEvent( 'PLAYER_TARGET_CHANGED' );
             FaderFrame:RegisterEvent( 'PLAYER_REGEN_DISABLED' );
-            FaderFrame:RegisterEvent( 'PLAYER_REGEN_ENABLED' );
             FaderFrame:RegisterEvent( 'UNIT_HEALTH' );
             FaderFrame:RegisterEvent( 'UNIT_AURA' );
             FaderFrame:SetScript( 'OnEvent',function( self,Event,... )
@@ -251,7 +251,9 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                 for Window,WindowData in pairs( Addon.FRAMES:GetSettings() ) do
                     Window = _G[ Window ] or false;
                     if( Window and WindowData.FadeAble ) then
-                        if( Event == 'PLAYER_TARGET_CHANGED' ) then
+                        if( Event == 'PLAYER_REGEN_DISABLED' ) then
+                            a = WindowData.Alpha;
+                        elseif( Event == 'PLAYER_TARGET_CHANGED' ) then
                             if( UnitExists( 'target' ) ) then
                                 a = WindowData.Alpha;
                             end
@@ -287,6 +289,7 @@ Addon.FRAMES:SetScript( 'OnEvent',function( self,Event,AddonName )
                     end
                 end
             end );
+            ]]
 
             self.Events:SetScript( 'OnEvent',function( self,Event,... )
                 if( Event == 'PLAYER_LEVEL_UP' ) then
