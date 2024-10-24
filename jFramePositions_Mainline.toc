@@ -9,7 +9,7 @@
 ## DefaultState: disabled
 ## SavedVariables: jFramePositions
 
-## Interface: 110000
+## Interface: 110005
 #/run print((select(4, GetBuildInfo())));
 #https://markdownlivepreview.com/
 
